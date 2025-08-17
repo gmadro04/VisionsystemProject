@@ -1,0 +1,16 @@
+camera:
+  imageSize: [1080, 1280]
+  worldUnits: "millimeters"
+  focalLength: [179.7304049738, 182.5331568822]
+  principalPoint: [614.6301438424, 574.8699254499]
+  skew: 0.0000000000
+  intrinsicMatrix:
+    - [179.7304049738, 0.0000000000, 614.6301438424]
+    - [0.0000000000, 182.5331568822, 574.8699254499]
+    - [0.0000000000, 0.0000000000, 1.0000000000]
+  distortionModel: "brown-conrady"
+  radialDistortion: [-0.268095649969, 0.043090004815, 0.000000000000]
+  tangentialDistortion: [0.000000000000, 0.000000000000]
+  reprojectionErrorPx: 1.119998
+  timestamp: "2025-08-16T22:50:53"
+  source: "MATLAB cameraCalibrator"
