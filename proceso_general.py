@@ -1,6 +1,7 @@
 # ============================================================
-#  Omni: segmentar -> undistort -> panorámica 
-#  Edita CONFIG y ejecuta: py proceso_general.py
+#  Este script es para procesar las imagenes adquiridas de la siguiente forma
+#   segmentar -> quitar distorsion -> panorámica de la escena 
+#  Edita CONFIG para rutas, luego ejecuta: py proceso_general.py
 # ============================================================
 
 from pathlib import Path
@@ -8,8 +9,8 @@ import os, math
 import numpy as np
 import cv2
 import yaml
+import pyfiglet as pf
 
-# (Opcionales)
 try:
     from scipy.io import loadmat
 except Exception:
@@ -21,24 +22,24 @@ except Exception:
 
 # ----------------------------- CONFIG -----------------------------
 CONFIG = {
-    # Imagen de entrada (1280x1080):
+    # Imagen de entrada del sistema:
     "IMG_PATH": r"C:\Users\GMADRO04\Documents\SOLER\QUPA\Testeo_QUPA\camara_QUPA\img_qupas\img_20250724_145948.jpg",
 
-    # Calibración (exportada desde MATLAB a .yml):
+    # Calibración parametros de cámara .yml exportado desde MATLAB:
     "CALIB_PATH": r"C:\Users\GMADRO04\InternxtDrive - 9b57733c-7089-4577-8a63-3bde573d87c2\Maestría\PRIMER SEMESTRE\VISION POR COMPUTADOR\VisionsystemProject\calib_output\cameraParams_1280x1080.yml",
 
-    # Máscara (.yml con "masks: mascaraRes_WxH" o .mat con mask_ref / pos+rad):
+    # Máscara de segmentacion archivo .yml con "masks: mascaraRes_WxH" o .mat con mask_ref / pos+rad:
     "MASK_PATH": r"C:\Users\GMADRO04\InternxtDrive - 9b57733c-7089-4577-8a63-3bde573d87c2\Maestría\PRIMER SEMESTRE\VISION POR COMPUTADOR\VisionsystemProject\espejo_mask.mat",
 
-    # Carpeta de salida (se crea si no existe):
+    # Carpeta de salida se crea si no existe:
     "OUT_DIR": r"C:\Users\GMADRO04\InternxtDrive - 9b57733c-7089-4577-8a63-3bde573d87c2\Maestría\PRIMER SEMESTRE\VISION POR COMPUTADOR\VisionsystemProject\salidas",
 
-    # Parámetros de unwrap:
+    # Parámetros de quitar distorsion - unwrap:
     "N_THETA": 720,
     "RMIN_FRAC": 0.06,
     "THETA_OFFSET_DEG": 0,   # gíralo si quieres otro “norte”
     "FLIP_180": True,        # True para ver la pano “derecha”
-    "GAUSS_SIGMA": 0.0,      # 0.4 si quieres suavizar
+    "GAUSS_SIGMA": 0.4,      # 0.4 si quieres suavizar 
     "MOSTRAR": True          # False en Raspberry headless
 }
 # -------------------------------------------------------------------
@@ -58,9 +59,10 @@ def load_calibration(calib_path):
     k = cam.get("radialDistortion", [0, 0, 0])
     if len(k) == 2: k = [k[0], k[1], 0.0]
     p = cam.get("tangentialDistortion", [0.0, 0.0])
-    K = np.array([[fx, 0,  cx],
-                  [0,  fy, cy],
-                  [0,   0,  1]], dtype=np.float64)
+    # matriz intrínseca y coef. distorsión de la calibración
+    K = np.array([  [fx, 0,  cx],
+                    [0,  fy, cy],
+                    [0,   0,  1]], dtype=np.float64)
     D = np.array([k[0], k[1], p[0], p[1], k[2]], dtype=np.float64).reshape(1, 5)  # k1 k2 p1 p2 k3
     return K, D, (H, W)
 
@@ -115,7 +117,7 @@ def load_mask(mask_path, image_size):
 
     raise ValueError(f"Formato de máscara no soportado: {ext}")
 
-# -------------------- Undistort + Unwrap helpers -------------------
+# -------------------- Quitar distorsión (Undistort) + Unwrap helpers -------------------
 
 def maximum_inscribed_circle(mask_u8):
     m = (mask_u8 > 0).astype(np.uint8)
@@ -144,7 +146,7 @@ def unwrap_panorama(Iu, cx, cy, rMin, rMax, nTheta=720, thetaOffsetDeg=0, flip18
         pano = cv2.GaussianBlur(pano, (k, k), sigmaX=sigma, sigmaY=sigma, borderType=cv2.BORDER_REPLICATE)
     return pano
 
-# --------------------------- Pipeline -----------------------------
+# --------------------------- Funciones de procesos -----------------------------
 
 def process_one(cfg):
     img_path   = Path(cfg["IMG_PATH"])
@@ -194,7 +196,7 @@ def process_one(cfg):
         plt.subplot(231); plt.imshow(cv2.cvtColor(I,  cv2.COLOR_BGR2RGB));  plt.title("Original");     plt.axis("off")
         plt.subplot(232); plt.imshow(M, cmap="gray");                        plt.title("Máscara");      plt.axis("off")
         plt.subplot(233); plt.imshow(cv2.cvtColor(Im, cv2.COLOR_BGR2RGB));   plt.title("Segmentada");   plt.axis("off")
-        plt.subplot(234); plt.imshow(cv2.cvtColor(Iu, cv2.COLOR_BGR2RGB));   plt.title("Undistort");    plt.axis("off")
+        plt.subplot(234); plt.imshow(cv2.cvtColor(Iu, cv2.COLOR_BGR2RGB));   plt.title("Sin distort");    plt.axis("off")
         ov = cv2.addWeighted(Iu, 1.0, cv2.cvtColor(Mund, cv2.COLOR_GRAY2BGR), 0.3, 0)
         plt.subplot(235); plt.imshow(cv2.cvtColor(ov, cv2.COLOR_BGR2RGB));   plt.title("ROI undistort");plt.axis("off")
         plt.subplot(236); plt.imshow(cv2.cvtColor(pano, cv2.COLOR_BGR2RGB)); plt.title("Panorámica");   plt.axis("off")
@@ -205,8 +207,9 @@ def process_one(cfg):
     return {"I": I, "Im": Im, "Iu": Iu, "M": M, "Mund": Mund, "pano": pano,
             "cx": cx, "cy": cy, "K": K, "D": D, "rMin": rMin, "rMax": rMax}
 
-# ------------------------------ Run ------------------------------
+# ------------------------------ Ejecutar el script ------------------------------
 
 if __name__ == "__main__":
     _ = process_one(CONFIG)
-    print(">> Proceso terminado y archivos guardados en:", CONFIG["OUT_DIR"])
+    print(pf.figlet_format("Procesamiento y recontruccion de imagenes ", font="bubble"))
+    print("Proceso terminado y archivos guardados en:" + str(CONFIG["OUT_DIR"]))
