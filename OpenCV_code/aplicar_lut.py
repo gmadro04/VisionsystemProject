@@ -15,7 +15,7 @@ try:
 except Exception:
     pd = None
 
-from lut_distancia import DistanciaPanoLUT
+from OpenCV_code.lut_distancia import DistanciaPanoLUT
 
 CONFIG = {
     # Entradas
