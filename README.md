@@ -70,15 +70,15 @@ Para utilizar los códigos python se necesita:
 
 ## 🚀 Flujo de trabajo
 
-Captura de imágenes en fotos_cam/.
+Captura de imágenes en **fotos_cam/**.
 
-Preprocesamiento y máscara (1Mascara_imagenes.mlx).
+Preprocesamiento y máscara **(1Mascara_imagenes.mlx)**.
 
-Corrección de distorsión (2_Sin_distorsion.mlx).
+Corrección de distorsión **(2_Sin_distorsion.mlx)**.
 
-Reconstrucción de panorámicas (3_panoramicas.mlx).
+Reconstrucción de panorámicas **(3_panoramicas.mlx)**.
 
-Segmentación de colores usando segmentacionHSV.py o segmentacionHSV_panos.py.
+Segmentación de colores usando **segmentacionHSV.py** o **segmentacionHSV_panos.py**.
 
 # 📊 Ejemplo de uso
 ***Segmentación sobre imágenes sin distorsión***
