@@ -92,9 +92,9 @@ CONFIG = {
 def a_rango_hsv_opencv(h_norm_lo, h_norm_hi, s_min_norm, v_min_norm):
     """
     Convierte umbrales normalizados [0..1] a escala OpenCV:
-      Hue: 0..179   (OpenCV usa H/2)
-      Sat: 0..255
-      Val: 0..255
+        Hue: 0..179   (OpenCV usa H/2)
+        Sat: 0..255
+        Val: 0..255
     Devuelve (lower, upper) para cv2.inRange.
     """
     loH = int(round(h_norm_lo * 179))
