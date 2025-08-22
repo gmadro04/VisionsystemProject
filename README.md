@@ -12,12 +12,12 @@ Aquí hay una imagen de ejemplo del sistema, sin distorsión:
 ![Ejemplo sin distorsión](img_sindistor/cal10_seg_und.png)
 
 ---
-Imagen de ejemplo panoramica recontruida:
+Imagen de ejemplo panoramica reconstruida:
 
 ![Ejemplo panoramica reconstruida](panos/cal10_seg_und_pano.png)
 
 ---
-Imagen de ejemplo panoramica recontruida en campo de prueba del sistema:
+Imagen de ejemplo panoramica reconstruida en campo de prueba del sistema:
 
 ![Ejemplo panoramica reconstruida](salidas/img_20250724_145941_pano.png)
 

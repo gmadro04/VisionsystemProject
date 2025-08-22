@@ -23,13 +23,14 @@ except Exception:
 # ----------------------------- CONFIG -----------------------------
 CONFIG = {
     # Carpeta de imágenes de entrada (png/jpg/jpeg/bmp/tif)
-    "DIR_ORIGEN": r"C:\Users\GMADRO04\Documents\SOLER\QUPA\Testeo_QUPA\camara_QUPA\img_1280x1080",
-
+    "DIR_ORIGEN": r"C:\Users\GMADRO04\Documents\SOLER\QUPA\Testeo_QUPA\camara_QUPA\img_1280_curadas",
+    # img_1280x1080 ---- una carpeta de procesamiento con base de 55 mm
+    # img_1280_curadas --- otra carpeta con imágenes con base de 60 mm
     # Calibración .yml exportada desde MATLAB (recomendado)
     "RUTA_CALIB": r"calib_output\cameraParams_1280x1080.yml",
 
     # Máscara .yml con masks.mascaraRes_WxH o .mat con mask_ref / pos+rad
-    "RUTA_MASCARA": "espejo_mask.mat",
+    "RUTA_MASCARA": "espejo_mask_1.mat",
 
     # Carpetas de salida
     "DIR_UNDIST": r"C:\Users\GMADRO04\Documents\SOLER\QUPA\Testeo_QUPA\camara_QUPA\undist",
