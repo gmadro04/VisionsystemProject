@@ -30,7 +30,7 @@ CONFIG = {
     "RUTA_CALIB": r"calib_output\cameraParams_1280x1080.yml",
 
     # Máscara .yml con masks.mascaraRes_WxH o .mat con mask_ref / pos+rad
-    "RUTA_MASCARA": "espejo_mask_1.mat", 
+    "RUTA_MASCARA": "espejo_mask.mat", 
     # Si se trabaja con base 60 mm usar espejo_mask.mat, si no base = 55 mm usar espejo_mask_1.mat
 
     # Carpetas de salida
